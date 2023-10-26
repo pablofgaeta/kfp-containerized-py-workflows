@@ -1,1 +1,1 @@
-# py-containerized-workflows
+# kfp-containerized-py-workflows
