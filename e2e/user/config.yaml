@@ -1,0 +1,14 @@
+generate_sample:
+    base_image: python:3.9
+    target_image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+    packages_to_install:
+        - numpy
+compute_metrics:
+    base_image: python:3.9
+    target_image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+    packages_to_install:
+        - numpy
+        - gcsfs
+        - fsspec
+config:
+    n: 10

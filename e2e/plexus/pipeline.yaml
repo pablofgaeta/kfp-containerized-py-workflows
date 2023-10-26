@@ -1,0 +1,120 @@
+# PIPELINE DEFINITION
+# Name: python-containerized-multi-test
+# Inputs:
+#    n: int
+# Outputs:
+#    compute-metrics-mean_value: system.Metrics
+components:
+  comp-compute-metrics:
+    executorLabel: exec-compute-metrics
+    inputDefinitions:
+      artifacts:
+        sample_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        mean_value:
+          artifactType:
+            schemaTitle: system.Metrics
+            schemaVersion: 0.0.1
+  comp-generate-sample:
+    executorLabel: exec-generate-sample
+    inputDefinitions:
+      parameters:
+        n:
+          parameterType: NUMBER_INTEGER
+    outputDefinitions:
+      artifacts:
+        sample_dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+deploymentSpec:
+  executors:
+    exec-compute-metrics:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - compute_metrics
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'numpy' 'gcsfs'\
+          \ 'fsspec' && \"$0\" \"$@\"\n"
+        - python3
+        - -m
+        - kfp.dsl.executor_main
+        image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+    exec-generate-sample:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - generate_sample
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'numpy' && \"\
+          $0\" \"$@\"\n"
+        - python3
+        - -m
+        - kfp.dsl.executor_main
+        image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+pipelineInfo:
+  name: python-containerized-multi-test
+root:
+  dag:
+    outputs:
+      artifacts:
+        compute-metrics-mean_value:
+          artifactSelectors:
+          - outputArtifactKey: mean_value
+            producerSubtask: compute-metrics
+    tasks:
+      compute-metrics:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-compute-metrics
+        dependentTasks:
+        - generate-sample
+        inputs:
+          artifacts:
+            sample_dataset:
+              taskOutputArtifact:
+                outputArtifactKey: sample_dataset
+                producerTask: generate-sample
+        taskInfo:
+          name: compute-metrics
+      generate-sample:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-generate-sample
+        inputs:
+          parameters:
+            n:
+              componentInputParameter: n
+        taskInfo:
+          name: generate-sample
+  inputDefinitions:
+    parameters:
+      n:
+        parameterType: NUMBER_INTEGER
+  outputDefinitions:
+    artifacts:
+      compute-metrics-mean_value:
+        artifactType:
+          schemaTitle: system.Metrics
+          schemaVersion: 0.0.1
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.3.0

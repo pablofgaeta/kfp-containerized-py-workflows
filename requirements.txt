@@ -1,0 +1,14 @@
+# User code dependencies
+numpy
+gcsfs
+fsspec
+
+# Parse user config
+pyyaml
+
+# KFP Building
+kfp
+docker
+
+# Running an example pipeline
+google-cloud-aiplatform
