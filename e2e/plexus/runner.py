@@ -1,43 +1,38 @@
 # %%
 import os
-import yaml
 
-import kfp
-from pipelines.python_containerized_multi import python_containerized_multi
+import pipelines
+from pipelines import python_containerized_multi
 
 from google.cloud import aiplatform
 
 # %%
-DISPLAY_NAME = "py-con-multi-test"
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "build", "user", "config.yaml")
-PIPELINE_SPEC_FILE = os.path.join(os.path.dirname(__file__), "pipelines", "pipeline.yaml")
+# Where component yamls are stored. If uploaded to a central repo, can instead pull from there.
+component_yaml_dir = os.path.join(os.getcwd(), "components", "build", "component_metadata")
+
+# User config where build time default pipeline params are stored. Not needed, but easy to grab for demo.
+user_config_path = os.path.join(os.getcwd(), "components", "build", "user", "config.yaml")
 
 # %%
-# replace with default config in application
-default_config = {
-    "location": "us-central1",
-    "enable_caching": False,
-    "parameter_values": {
-        "n": 10
-    }
-}
-
-with open(CONFIG_PATH, "r") as f:
-    user_config: dict = yaml.safe_load(f)
-    pipeline_config = default_config
-    pipeline_config.update(user_config.get("pipeline_config", {}))
-
-# %%
-kfp.compiler.Compiler().compile(python_containerized_multi, PIPELINE_SPEC_FILE)
-
-# %%
-job = aiplatform.PipelineJob(
-    template_path=PIPELINE_SPEC_FILE,
-    **pipeline_config
+# Get build time config. Not needed if running a custom pipeline job.
+from components.premade.utils import config
+pipeline_config = config.get_pipeline_config(
+    base_config={"location": "us-central1", "enable_caching": False},
+    user_config_path=user_config_path
 )
 
 # %%
-job.submit(
-    service_account="cvs-vai-pipeline@pg-cvs-sandbox.iam.gserviceaccount.com"
+# Load and compile target pipeline
+pipeline = python_containerized_multi.load(
+    component_yaml_dir = component_yaml_dir,
+    name = pipeline_config['display_name']
 )
-# https://pantheon.corp.google.com/vertex-ai/locations/us-west2/pipelines/runs/python-containerized-test-20231025152534?project=pg-cvs-sandbox&e=13803378&mods=dm_deploy_from_gcs
+pipeline_spec_file = pipelines.compile(pipeline)
+
+# %%
+# Construct pipeline job
+job = aiplatform.PipelineJob(template_path=pipeline_spec_file, **pipeline_config)
+
+# %%
+# Run pipeline job
+job.submit(service_account="cvs-vai-pipeline@pg-cvs-sandbox.iam.gserviceaccount.com")

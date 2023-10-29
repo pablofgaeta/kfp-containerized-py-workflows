@@ -2,8 +2,9 @@ pipeline_config:
     project: pg-cvs-sandbox
     display_name: py-con-multi-test
     pipeline_root: gs://cvs_demo_bucket/py-con-multi-test
+    parameter_values:
+        n: 10
 component_config:
     target_image: us-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
     packages_to_install:
         - numpy
-
