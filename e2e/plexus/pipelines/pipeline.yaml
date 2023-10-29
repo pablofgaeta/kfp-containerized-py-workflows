@@ -1,5 +1,5 @@
 # PIPELINE DEFINITION
-# Name: python-containerized-multi-test
+# Name: py-con-multi-test
 # Inputs:
 #    n: int
 # Outputs:
@@ -45,12 +45,12 @@ deploymentSpec:
         - -c
         - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
           \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
-          \ python3 -m pip install --quiet --no-warn-script-location 'numpy' 'gcsfs'\
-          \ 'fsspec' && \"$0\" \"$@\"\n"
+          \ python3 -m pip install --quiet --no-warn-script-location 'gcsfs' 'fastparquet'\
+          \ 'pandas' 'numpy' && \"$0\" \"$@\"\n"
         - python3
         - -m
         - kfp.dsl.executor_main
-        image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+        image: us-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
     exec-generate-sample:
       container:
         args:
@@ -63,14 +63,14 @@ deploymentSpec:
         - -c
         - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
           \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
-          \ python3 -m pip install --quiet --no-warn-script-location 'numpy' && \"\
-          $0\" \"$@\"\n"
+          \ python3 -m pip install --quiet --no-warn-script-location 'gcsfs' 'fastparquet'\
+          \ 'pandas' 'numpy' && \"$0\" \"$@\"\n"
         - python3
         - -m
         - kfp.dsl.executor_main
-        image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+        image: us-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
 pipelineInfo:
-  name: python-containerized-multi-test
+  name: py-con-multi-test
 root:
   dag:
     outputs:
@@ -117,4 +117,4 @@ root:
           schemaTitle: system.Metrics
           schemaVersion: 0.0.1
 schemaVersion: 2.1.0
-sdkVersion: kfp-2.3.0
+sdkVersion: kfp-2.4.0

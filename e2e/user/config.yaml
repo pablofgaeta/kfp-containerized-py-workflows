@@ -1,14 +1,9 @@
-generate_sample:
-    base_image: python:3.9
-    target_image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
+pipeline_config:
+    project: pg-cvs-sandbox
+    display_name: py-con-multi-test
+    pipeline_root: gs://cvs_demo_bucket/py-con-multi-test
+component_config:
+    target_image: us-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
     packages_to_install:
         - numpy
-compute_metrics:
-    base_image: python:3.9
-    target_image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/multi_component_test:latest
-    packages_to_install:
-        - numpy
-        - gcsfs
-        - fsspec
-config:
-    n: 10
+
