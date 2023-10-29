@@ -1,7 +1,7 @@
 # User code dependencies
+pandas
 numpy
 gcsfs
-fsspec
 
 # Parse user config
 pyyaml
