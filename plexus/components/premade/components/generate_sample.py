@@ -20,16 +20,13 @@ def generate_sample(n: int, sample_dataset: Output[Dataset]):
     import logging
     import pandas as pd
 
-    from user import stats
+    from user.utils import stats
 
     sample = stats.gen_sample(n)
 
     df = pd.DataFrame({"sample": sample})
 
-    try:
-        sample_dataset_path = sample_dataset.path
+    sample_dataset_path = sample_dataset.path
 
-        logging.info(f"Writing dataset to path: {sample_dataset_path}")
-        df.to_parquet(sample_dataset_path, engine="fastparquet")
-    except Exception as e:
-        logging.exception(e)
+    logging.info(f"Writing dataset to path: {sample_dataset_path}")
+    df.to_parquet(sample_dataset_path, engine="fastparquet")

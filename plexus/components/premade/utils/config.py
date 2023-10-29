@@ -22,20 +22,24 @@ def _get_user_var(var_name: str, user_config_path: str = DEFAULT_CONFIG_PATH) ->
         raise KeyError(err_msg)
 
 def get_pipeline_config(base_config: Optional[dict], user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
-    if base_config is not None:
-        pipeline_config: dict = deepcopy(base_config)
-    else:
+    if base_config is None:
         pipeline_config = {}
+    else:
+        pipeline_config: dict = deepcopy(base_config)
 
     user_pipeline_config: dict = _get_user_var("pipeline_config", user_config_path)
     pipeline_config.update(user_pipeline_config)
 
     return pipeline_config
 
-def get_component_config(base_config: dict, user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
-    default_base_image = base_config.get("base_image", "python:3.9")
-    default_packages = base_config.get("packages_to_install", [])
-    default_target_image = base_config.get("target_image") # Update with default target image if it can be generated
+def get_component_config(base_config: Optional[dict], user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
+    if base_config is None:
+        default_base_image, default_packages, default_target_image = None, None, None
+    else:
+        default_base_image = base_config.get("base_image", "python:3.9")
+        default_packages = base_config.get("packages_to_install", [])
+        # Update with default target image if it can be generated
+        default_target_image = base_config.get("target_image")
 
     user_component_config: dict = _get_user_var("component_config", user_config_path)
 

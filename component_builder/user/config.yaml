@@ -1,6 +1,0 @@
-base_image: python:3.9
-target_image: us-west2-docker.pkg.dev/pg-cvs-sandbox/demo-repository/example_py_containerized:latest
-packages_to_install:
-    - numpy
-config:
-    n: 10

@@ -20,14 +20,11 @@ def compute_metrics(sample_dataset: Input[Dataset], mean_value: Output[Metrics])
     import logging
     import pandas as pd
 
-    from user import stats
+    from user.utils import stats
 
-    try:
-        sample_dataset_path = sample_dataset.path
+    sample_dataset_path = sample_dataset.path
 
-        logging.info(f"Reading dataset from path: {sample_dataset_path}")
-        sample_df = pd.read_parquet(sample_dataset_path, engine="fastparquet")
+    logging.info(f"Reading dataset from path: {sample_dataset_path}")
+    sample_df = pd.read_parquet(sample_dataset_path, engine="fastparquet")
 
-        mean_value.log_metric("mean", stats.sample_mean(sample_df['sample']))
-    except Exception as e:
-        logging.exception(e)
+    mean_value.log_metric("mean", stats.sample_mean(sample_df['sample']))
