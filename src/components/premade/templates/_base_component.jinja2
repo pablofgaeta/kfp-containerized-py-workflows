@@ -1,0 +1,11 @@
+import typing
+
+import kfp
+from kfp import dsl
+
+@dsl.component(
+    base_image = "{{base_image}}",
+    packages_to_install = {{packages_to_install}},
+    target_image = "{{target_image}}"
+)
+{{python_func}}

@@ -15,7 +15,7 @@ user_config_path = os.path.join(os.getcwd(), "components", "build", "user", "con
 
 # %%
 # Get build time config. Not needed if running a custom pipeline job.
-from components.premade.utils import config
+from utils import config
 pipeline_config = config.get_pipeline_config(
     base_config={"location": "us-central1", "enable_caching": False},
     user_config_path=user_config_path

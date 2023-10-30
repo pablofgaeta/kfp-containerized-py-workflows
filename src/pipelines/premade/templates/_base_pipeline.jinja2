@@ -1,0 +1,13 @@
+import typing
+import os
+
+from kfp import dsl, components
+
+def load(component_yaml_dir: str, **pipeline_args):
+    component = components.load_component_from_file(os.path.join(component_yaml_dir, "{{component_yaml_basename}}"))
+
+    @dsl.pipeline(**pipeline_args)
+    def pipeline({{pipeline_signature}}):
+        component({{keyword_arguments}})
+    
+    return pipeline

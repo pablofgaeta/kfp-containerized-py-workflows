@@ -1,9 +1,9 @@
 from typing import Any, Optional
 from copy import deepcopy
 
-import os
 import yaml
 
+import os
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "user", "config.yaml")
 
 def _get_user_config(user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
@@ -21,7 +21,7 @@ def _get_user_var(var_name: str, user_config_path: str = DEFAULT_CONFIG_PATH) ->
         err_msg = f"{var_name} is not in the user config file: {user_config_path}"
         raise KeyError(err_msg)
 
-def get_pipeline_config(base_config: Optional[dict], user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
+def get_pipeline_config(base_config: Optional[dict] = None, user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
     if base_config is None:
         pipeline_config = {}
     else:
@@ -32,9 +32,9 @@ def get_pipeline_config(base_config: Optional[dict], user_config_path: str = DEF
 
     return pipeline_config
 
-def get_component_config(base_config: Optional[dict], user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
+def get_component_config(base_config: Optional[dict] = None, user_config_path: str = DEFAULT_CONFIG_PATH) -> dict:
     if base_config is None:
-        default_base_image, default_packages, default_target_image = None, None, None
+        default_base_image, default_packages, default_target_image = None, [], None
     else:
         default_base_image = base_config.get("base_image", "python:3.9")
         default_packages = base_config.get("packages_to_install", [])
@@ -44,6 +44,7 @@ def get_component_config(base_config: Optional[dict], user_config_path: str = DE
     user_component_config: dict = _get_user_var("component_config", user_config_path)
 
     component_config = {
+        **user_component_config,
         "base_image": user_component_config.get('base_image', default_base_image),
         "packages_to_install": list(set(user_component_config.get("packages_to_install", []) + default_packages)),
         "target_image": user_component_config.get("target_image", default_target_image)

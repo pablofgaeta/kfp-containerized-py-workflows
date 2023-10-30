@@ -3,12 +3,16 @@ from kfp import dsl
 
 from utils import config
 
+import os
+USER_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "user", "config.yaml")
+
 component_config = config.get_component_config(
     base_config={
         "base_image": "python:3.9",
         "packages_to_install": ["pandas", "gcsfs", "fastparquet"],
         "target_image": None,
-    }
+    },
+    user_config_path=USER_CONFIG_PATH
 )
 
 @dsl.component(
@@ -20,7 +24,7 @@ def compute_metrics(sample_dataset: Input[Dataset], mean_value: Output[Metrics])
     import logging
     import pandas as pd
 
-    from user.utils import stats
+    from user import stats
 
     sample_dataset_path = sample_dataset.path
 

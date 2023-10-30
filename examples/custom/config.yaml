@@ -1,0 +1,15 @@
+pipeline_config:
+    project: pg-cvs-sandbox
+    display_name: py-con-custom-test
+    pipeline_root: gs://cvs_demo_bucket/py-con-custom-test
+    parameter_values:
+        n: 10
+component_config:
+    component_name: my_custom_component
+    base_image: python:3.9
+    target_image: us-docker.pkg.dev/pg-cvs-sandbox/demo-repository/my_custom_component:latest
+    packages_to_install:
+        - numpy
+        - pandas
+        - gcsfs
+        - fastparquet

@@ -1,12 +1,11 @@
-from kfp.dsl import Output, Dataset, Metrics
+from kfp import dsl
 
 def component(
-    config: dict, sample_dataset: Output[Dataset], mean_value: Output[Metrics]
+    n: int, sample_dataset: dsl.Output[dsl.Dataset], sample_metrics: dsl.Output[dsl.Metrics]
 ):
     import pandas as pd
-    from user.utils import stats
+    from user import stats
 
-    n = config["n"]
     sample = stats.gen_sample(n)
 
     # Write dataset to Output Dataset parquet file
@@ -15,4 +14,4 @@ def component(
 
     # Log mean to Metric Artifact
     mean = stats.sample_mean(sample)
-    mean_value.log_metric("mean", mean)
+    sample_metrics.log_metric("mean", mean)

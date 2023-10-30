@@ -9,6 +9,7 @@ pyyaml
 # KFP Building
 kfp
 docker
+jinja2
 
 # Running an example pipeline
 google-cloud-aiplatform
