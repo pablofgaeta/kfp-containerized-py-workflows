@@ -20,7 +20,7 @@ To run a test pipeline after building, the custom and template examples can be r
     - Optional files:
         - `user/`: Directory including any source code to be used by the custom component.
     - Build requirements:
-        - Can work with any KFP DSL artifacts as long as their type hints begin with `kfp` or `dsl` (e.g. `kfp.dsl.Input[kfp.dsl.Dataset]` or `dsl.Input[dsl.Dataset]`).
+        - Can work with any KFP DSL artifacts as long as their type hints begin with `kfp` or `dsl` (e.g. `kfp.dsl.Input[kfp.dsl.Dataset]` or `dsl.Input[dsl.Dataset]`). Both input and output artifacts are valid.
     - Pipeline test requirements:
         - Only DSL output artifacts will work for the test pipeline runner since no input artifacts can be passed when only testing a single component (e.g. `dsl.Output[dsl.Dataset]` is supported, but `dsl.Input[dsl.Dataset]` is NOT supported).
 
