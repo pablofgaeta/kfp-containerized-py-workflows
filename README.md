@@ -1,5 +1,21 @@
 # kfp-containerized-py-workflows
 
+## Pre-requisites
+
+Must run in an environment running [Docker](https://www.docker.com/).
+
+The build step will upload Docker images to Artifact Registry, which requires:
+
+- The Artifact Registry API is enabled in a GCP project.
+- A Docker repository must exist to store target images.
+- Executor is configured to upload to this region (e.g. by running `gcloud auth configure-docker ${REGION}-docker.pkg.dev`)
+
+The pipeline test step will build and run a KFP pipeline in Vertex pipelines, which requires:
+
+- All the standard APIs are enabled to use Vertex
+- The service account running the pipeline has the necessary privileges to run pipeline and execute the code within it (currently, this is the default compute engine service account, but can be changed in the `src/*-runner.py` files).
+- Executor has permissions to run the pipeline job with the specified configurations.
+
 ## Getting started
 
 The `examples/` directory includes an example for each workflow. The config yaml files must be updated to point to valid GCP resources run the example `Makefile` targets.

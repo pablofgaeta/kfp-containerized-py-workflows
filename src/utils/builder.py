@@ -5,11 +5,11 @@ from utils import config
 import inspect 
 import os
 
-COMPONENT_TEMPLATE_DIR = os.path.join(os.getcwd(), "components", "premade", "templates")
-PIPELINE_TEMPLATE_DIR = os.path.join(os.getcwd(), "pipelines", "premade", "templates")
-USER_CONFIG_PATH = os.path.join(os.getcwd(), "components", "build", "config.yaml")
-COMPONENT_DIR = os.path.join(os.getcwd(), "components", "build", "components")
-PIPELINE_DIR = os.path.join(os.getcwd(), "pipelines", "build")
+COMPONENT_TEMPLATE_DIR = os.path.join(__file__, "..", "components", "premade", "templates")
+PIPELINE_TEMPLATE_DIR = os.path.join(__file__, "..", "pipelines", "premade", "templates")
+USER_CONFIG_PATH = os.path.join(__file__, "..", "components", "build", "config.yaml")
+COMPONENT_DIR = os.path.join(__file__, "..", "components", "build", "components")
+PIPELINE_DIR = os.path.join(__file__, "..", "pipelines", "build")
 
 def custom_pipeline_build():
     from components.build import main
